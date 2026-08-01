@@ -1,7 +1,8 @@
 import { galleryImages } from "@/data/gallery";
 import { withBasePath } from "@/lib/basePath";
 
-const featured = galleryImages[9];
+// caleb-2026-07-19-01.jpg (originally IMG_1204.jpeg)
+const featured = galleryImages.find((image) => image.src.endsWith("photo-12.jpg"))!;
 
 export default function About() {
   return (
