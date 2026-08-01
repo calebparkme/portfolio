@@ -22,12 +22,12 @@ export default function About() {
           <p className="mb-4 text-xs tracking-[0.3em] text-neutral-400 uppercase">
             About
           </p>
-          <p className="text-xl leading-relaxed font-light text-neutral-800 sm:text-2xl dark:text-neutral-100">
+          <p className="text-xl leading-relaxed font-light text-neutral-800 sm:text-2xl">
             오랜 시간 IT업계에 종사하다,
             <br />
             이제는 나의 즐거움을 찾아가고 있습니다.
           </p>
-          <p className="mt-6 max-w-lg text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
+          <p className="mt-6 max-w-lg text-sm leading-relaxed text-neutral-500">
             카메라와 낚싯대를 들고 자연 속에서 시간을 보내며, 그 안에서
             발견한 순간들을 사진과 영상으로 기록합니다.
           </p>
