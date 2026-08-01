@@ -47,7 +47,7 @@ export default function Gallery() {
       <p className="mb-10 text-xs tracking-[0.3em] text-neutral-400 uppercase">
         Gallery
       </p>
-      <div className="columns-2 gap-3 sm:columns-3 sm:gap-4">
+      <div className="mx-auto w-4/5 columns-2 gap-3 sm:columns-3 sm:gap-4">
         {galleryImages.map((image, index) => (
           <button
             key={image.src}
@@ -61,7 +61,7 @@ export default function Gallery() {
               width={image.width}
               height={image.height}
               loading="lazy"
-              className="w-full object-cover transition-transform duration-500 hover:scale-105"
+              className="w-full grayscale object-cover transition-all duration-500 hover:scale-105 hover:grayscale-0"
             />
           </button>
         ))}
