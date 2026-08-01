@@ -1,4 +1,5 @@
 import { galleryImages } from "@/data/gallery";
+import { withBasePath } from "@/lib/basePath";
 
 const featured = galleryImages[9];
 
@@ -8,7 +9,7 @@ export default function About() {
       <div className="grid grid-cols-1 gap-12 sm:grid-cols-5 sm:gap-16">
         <div className="sm:col-span-2">
           <img
-            src={featured.src}
+            src={withBasePath(featured.src)}
             alt="Caleb Park"
             width={featured.width}
             height={featured.height}

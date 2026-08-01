@@ -1,10 +1,12 @@
+import { withBasePath } from "@/lib/basePath";
+
 export default function Hero() {
   return (
     <section id="top" className="relative flex h-screen w-full items-end overflow-hidden bg-black">
       <video
         className="absolute inset-0 h-full w-full object-cover opacity-80"
-        src="/video/intro.mp4"
-        poster="/video/intro-poster.jpg"
+        src={withBasePath("/video/intro.mp4")}
+        poster={withBasePath("/video/intro-poster.jpg")}
         autoPlay
         muted
         loop

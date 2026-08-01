@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { galleryImages } from "@/data/gallery";
+import { withBasePath } from "@/lib/basePath";
 
 export default function Gallery() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -55,7 +56,7 @@ export default function Gallery() {
             className="mb-3 block w-full break-inside-avoid overflow-hidden rounded-sm sm:mb-4"
           >
             <img
-              src={image.src}
+              src={withBasePath(image.src)}
               alt=""
               width={image.width}
               height={image.height}
@@ -91,7 +92,7 @@ export default function Gallery() {
             ‹
           </button>
           <img
-            src={active.src}
+            src={withBasePath(active.src)}
             alt=""
             onClick={(event) => event.stopPropagation()}
             className="max-h-full max-w-full object-contain"
