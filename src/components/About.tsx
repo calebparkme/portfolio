@@ -1,0 +1,36 @@
+import { galleryImages } from "@/data/gallery";
+
+const featured = galleryImages[9];
+
+export default function About() {
+  return (
+    <section id="about" className="mx-auto max-w-6xl px-6 py-24 sm:px-10 sm:py-32">
+      <div className="grid grid-cols-1 gap-12 sm:grid-cols-5 sm:gap-16">
+        <div className="sm:col-span-2">
+          <img
+            src={featured.src}
+            alt="Caleb Park"
+            width={featured.width}
+            height={featured.height}
+            className="aspect-4/5 w-full rounded-sm object-cover"
+            loading="lazy"
+          />
+        </div>
+        <div className="flex flex-col justify-center sm:col-span-3">
+          <p className="mb-4 text-xs tracking-[0.3em] text-neutral-400 uppercase">
+            About
+          </p>
+          <p className="text-xl leading-relaxed font-light text-neutral-800 sm:text-2xl dark:text-neutral-100">
+            오랜 시간 IT업계에 종사하다,
+            <br />
+            이제는 나의 즐거움을 찾아가고 있습니다.
+          </p>
+          <p className="mt-6 max-w-lg text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
+            카메라와 낚싯대를 들고 자연 속에서 시간을 보내며, 그 안에서
+            발견한 순간들을 사진과 영상으로 기록합니다.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
