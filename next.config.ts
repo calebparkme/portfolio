@@ -1,18 +1,13 @@
 import type { NextConfig } from "next";
 
-const repoName = "portfolio";
-const isProd = process.env.NODE_ENV === "production";
-const basePath = isProd ? `/${repoName}` : "";
-
+// Served from the custom domain root (calebpark.org), so no basePath needed.
 const nextConfig: NextConfig = {
   output: "export",
-  basePath,
-  assetPrefix: isProd ? `/${repoName}/` : "",
   images: {
     unoptimized: true,
   },
   env: {
-    NEXT_PUBLIC_BASE_PATH: basePath,
+    NEXT_PUBLIC_BASE_PATH: "",
   },
 };
 
