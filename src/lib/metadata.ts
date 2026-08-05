@@ -53,8 +53,9 @@ export function buildMetadata(locale: Locale): Metadata {
     },
     verification: {
       google: "uO7ul6nQaG2vcYJf7VrihKoTNWf3zOAwh5r9y3GNnAo",
-      // Once verified in 네이버 서치어드바이저, add the provided token here, e.g.:
-      // other: { "naver-site-verification": "naver-verification-token" },
+      other: {
+        "naver-site-verification": "b5eb1dba3cf476350140b43a145e994cc5f81c12",
+      },
     },
   };
 }
