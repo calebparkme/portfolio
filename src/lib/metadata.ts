@@ -51,11 +51,10 @@ export function buildMetadata(locale: Locale): Metadata {
       index: true,
       follow: true,
     },
-    // Once verified in Google Search Console / 네이버 서치어드바이저, add the
-    // provided tokens here, e.g.:
-    // verification: {
-    //   google: "google-site-verification-token",
-    //   other: { "naver-site-verification": "naver-verification-token" },
-    // },
+    verification: {
+      google: "uO7ul6nQaG2vcYJf7VrihKoTNWf3zOAwh5r9y3GNnAo",
+      // Once verified in 네이버 서치어드바이저, add the provided token here, e.g.:
+      // other: { "naver-site-verification": "naver-verification-token" },
+    },
   };
 }
