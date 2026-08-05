@@ -1,0 +1,21 @@
+# Caleb Park
+
+> Caleb Park is a photographer, videographer, and fly fisher based in Korea. This site is his personal portfolio, showcasing nature and travel photography and video work.
+
+Caleb spent many years working in the IT industry and is now pursuing photography, videography, and fly fishing as his personal creative practice. His work focuses on nature, landscapes, and quiet everyday moments.
+
+This site is available in English (default) and Korean.
+
+## Site sections
+
+- [Home](https://calebpark.org/) — Hero introduction and video
+- [About](https://calebpark.org/#about) — Background and personal statement
+- [Gallery](https://calebpark.org/#gallery) — Photography portfolio
+- [Contact](https://calebpark.org/#contact) — Ways to get in touch
+- [한국어 버전 (Korean version)](https://calebpark.org/ko/)
+
+## Contact & profiles
+
+- YouTube: https://www.youtube.com/@calebpark4373
+- Instagram: https://www.instagram.com/caleb.park/
+- Email: caleb.yh.me@gmail.com

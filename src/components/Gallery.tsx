@@ -3,8 +3,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { galleryImages } from "@/data/gallery";
 import { withBasePath } from "@/lib/basePath";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/dictionaries/types";
 
-export default function Gallery() {
+export default function Gallery({
+  dict,
+  locale,
+}: {
+  dict: Dictionary["gallery"];
+  locale: Locale;
+}) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const close = useCallback(() => setActiveIndex(null), []);
@@ -45,7 +53,7 @@ export default function Gallery() {
   return (
     <section id="gallery" className="mx-auto max-w-6xl px-6 py-24 sm:px-10 sm:py-32">
       <p className="mb-10 text-xs tracking-[0.3em] text-neutral-400 uppercase">
-        Gallery
+        {dict.kicker}
       </p>
       <div className="mx-auto w-4/5 columns-2 gap-3 sm:columns-3 sm:gap-4">
         {galleryImages.map((image, index) => (
@@ -57,7 +65,7 @@ export default function Gallery() {
           >
             <img
               src={withBasePath(image.src)}
-              alt=""
+              alt={image.alt[locale]}
               width={image.width}
               height={image.height}
               loading="lazy"
@@ -75,7 +83,7 @@ export default function Gallery() {
           <button
             type="button"
             onClick={close}
-            aria-label="Close"
+            aria-label={dict.closeLabel}
             className="absolute top-6 right-6 text-3xl leading-none text-white/70 hover:text-white"
           >
             ×
@@ -86,14 +94,14 @@ export default function Gallery() {
               event.stopPropagation();
               showPrev();
             }}
-            aria-label="Previous"
+            aria-label={dict.prevLabel}
             className="absolute left-2 text-3xl text-white/60 hover:text-white sm:left-6"
           >
             ‹
           </button>
           <img
             src={withBasePath(active.src)}
-            alt=""
+            alt={active.alt[locale]}
             onClick={(event) => event.stopPropagation()}
             className="max-h-full max-w-full object-contain"
           />
@@ -103,7 +111,7 @@ export default function Gallery() {
               event.stopPropagation();
               showNext();
             }}
-            aria-label="Next"
+            aria-label={dict.nextLabel}
             className="absolute right-2 text-3xl text-white/60 hover:text-white sm:right-6"
           >
             ›

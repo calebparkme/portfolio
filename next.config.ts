@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 // Served from the custom domain root (calebpark.org), so no basePath needed.
 const nextConfig: NextConfig = {
   output: "export",
+  trailingSlash: true,
   images: {
     unoptimized: true,
   },

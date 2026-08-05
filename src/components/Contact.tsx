@@ -1,27 +1,21 @@
-const links = [
-  {
-    label: "YouTube",
-    href: "https://www.youtube.com/@calebpark4373",
-  },
-  {
-    label: "Instagram",
-    href: "https://www.instagram.com/caleb.park/",
-  },
-  {
-    label: "Email",
-    href: "mailto:caleb.yh.me@gmail.com",
-  },
-];
+import { socialLinks } from "@/lib/site";
+import type { Dictionary } from "@/dictionaries/types";
 
-export default function Contact() {
+export default function Contact({ dict }: { dict: Dictionary["contact"] }) {
+  const links = [
+    { label: dict.links.youtube, href: socialLinks.youtube },
+    { label: dict.links.instagram, href: socialLinks.instagram },
+    { label: dict.links.email, href: `mailto:${socialLinks.email}` },
+  ];
+
   return (
     <section id="contact" className="border-t border-neutral-200">
       <div className="mx-auto max-w-6xl px-6 py-24 sm:px-10 sm:py-32">
         <p className="mb-6 text-xs tracking-[0.3em] text-neutral-400 uppercase">
-          Contact
+          {dict.kicker}
         </p>
         <h2 className="max-w-xl text-2xl leading-relaxed font-light text-neutral-800 sm:text-3xl">
-          함께 이야기 나누고 싶다면 언제든 연락 주세요.
+          {dict.heading}
         </h2>
         <div className="mt-10 flex flex-wrap gap-x-10 gap-y-4">
           {links.map((link) => (
