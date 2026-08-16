@@ -21,24 +21,26 @@ export default function Header({
         <a href="#top" className="text-sm font-medium tracking-[0.2em] uppercase">
           Caleb Park
         </a>
-        <nav className="flex items-center gap-6 text-xs tracking-[0.15em] uppercase sm:gap-8">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="opacity-80 transition-opacity hover:opacity-100"
-            >
-              {link.label}
-            </a>
-          ))}
+        <div className="flex items-center gap-5 sm:gap-7">
+          <nav className="flex items-center gap-6 text-xs tracking-[0.15em] uppercase sm:gap-8">
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="opacity-80 transition-opacity hover:opacity-100"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
           <a
             href={otherLocaleHref}
             hrefLang={locale === "en" ? "ko" : "en"}
-            className="opacity-80 transition-opacity hover:opacity-100"
+            className="rounded-full border border-white/50 px-3 py-1 text-[10px] tracking-[0.15em] uppercase opacity-80 transition-all hover:border-white hover:opacity-100"
           >
             {dict.languageSwitch.label}
           </a>
-        </nav>
+        </div>
       </div>
     </header>
   );
