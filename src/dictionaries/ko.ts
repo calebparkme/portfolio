@@ -15,9 +15,9 @@ const ko: Dictionary = {
     ],
   },
   nav: {
-    about: "About",
-    gallery: "Gallery",
-    contact: "Contact",
+    about: "소개",
+    gallery: "갤러리",
+    contact: "문의",
   },
   languageSwitch: {
     label: "English",
