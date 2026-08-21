@@ -2,49 +2,74 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Calebs Notification</title>
+<title>SMS Notifications Sign-Up | Calebs Notification</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  body { font-family: -apple-system, Arial, sans-serif; max-width: 640px; margin: 60px auto; padding: 0 24px; line-height: 1.7; color: #1a1a1a; }
-  h1 { font-size: 1.8em; margin-bottom: 0.2em; }
-  .sub { color: #666; margin-top: 0; }
-  h2 { font-size: 1.1em; margin-top: 2em; }
+  body { font-family: -apple-system, "Segoe UI", Arial, sans-serif; max-width: 620px; margin: 50px auto; padding: 0 24px; line-height: 1.65; color: #1a1a1a; background: #fff; }
+  h1 { font-size: 1.7em; margin-bottom: 0.15em; }
+  .sub { color: #666; margin-top: 0; font-size: 0.95em; }
+  h2 { font-size: 1.05em; margin-top: 2em; margin-bottom: 0.4em; }
+  .form-box { border: 1px solid #d8d8d8; border-radius: 10px; padding: 24px; margin-top: 24px; background: #fafafa; }
+  label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.95em; }
+  input[type="tel"] { width: 100%; padding: 11px; font-size: 1em; border: 1px solid #bbb; border-radius: 6px; box-sizing: border-box; }
+  .consent { display: flex; align-items: flex-start; gap: 10px; margin-top: 18px; }
+  .consent input { margin-top: 4px; flex-shrink: 0; }
+  .consent-text { font-size: 0.88em; color: #333; line-height: 1.55; }
+  button { margin-top: 18px; width: 100%; padding: 12px; font-size: 1em; font-weight: 600; background: #0b5ed7; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
   ul { padding-left: 1.2em; }
   a { color: #0b5ed7; }
-  footer { margin-top: 3em; padding-top: 1.5em; border-top: 1px solid #e2e2e2; font-size: 0.9em; color: #666; }
+  footer { margin-top: 3em; padding-top: 1.4em; border-top: 1px solid #e4e4e4; font-size: 0.87em; color: #666; }
+  .sample { background: #f2f4f7; border-left: 3px solid #0b5ed7; padding: 12px 16px; margin: 10px 0; font-size: 0.9em; border-radius: 0 6px 6px 0; }
 </style>
 </head>
 <body>
 
 <h1>Calebs Notification</h1>
-<p class="sub">Automated booking notification service — operated by Younghoon "Caleb" Park, Milton, Ontario, Canada</p>
+<p class="sub">Booking notification service &middot; Younghoon "Caleb" Park &middot; Milton, Ontario, Canada</p>
 
-<h2>About This Service</h2>
-<p>Calebs Notification is a booking notification service that delivers automated SMS alerts about class and appointment reservations. Recipients receive text messages when a booking is confirmed, cancelled, or rescheduled.</p>
+<h2>About this SMS program</h2>
+<p>Calebs Notification sends automated SMS alerts about class and appointment bookings. You will receive a text message when a booking is confirmed, cancelled, or rescheduled. Messages are transactional only &mdash; no marketing or promotional content is ever sent.</p>
 
-<h2>What Messages Look Like</h2>
-<p>Calebs Notification: Booked - Cardio Strength (MLC) with Lilly (#111664) on 2026/08/21 09:15 am - 10:05 am. Reply STOP to opt out.</p>
+<h2>Example messages you will receive</h2>
+<div class="sample">Calebs Notification: Booked - Cardio Strength (MLC) with Lilly (#111664) on 2026/08/21 09:15 am - 10:05 am. Reply STOP to opt out.</div>
+<div class="sample">Calebs Notification: Cancelled - Cardio Strength (MLC) with Lilly (#111664) on 2026/08/21 09:15 am - 10:05 am. Reply HELP for help, STOP to opt out.</div>
 
-<h2>Message Details</h2>
+<h2>Sign up for SMS notifications</h2>
+
+<div class="form-box">
+  <label for="phone">Mobile phone number</label>
+  <input type="tel" id="phone" name="phone" placeholder="(647) 555-0123">
+
+  <div class="consent">
+    <input type="checkbox" id="consent" name="consent">
+    <span class="consent-text">
+      <strong>I agree to receive automated SMS booking notifications from Calebs Notification</strong> at the mobile number provided above. Message frequency varies based on booking activity. Message and data rates may apply. Reply STOP to opt out at any time, or HELP for assistance. Consent is not a condition of any purchase. See our <a href="terms.html">SMS Terms and Conditions</a> and <a href="privacy.html">Privacy Policy</a>.
+    </span>
+  </div>
+
+  <button type="button">Sign up for notifications</button>
+</div>
+
+<h2>Program details</h2>
 <ul>
-  <li>Message frequency varies based on booking activity.</li>
-  <li>Message and data rates may apply.</li>
-  <li>Reply STOP to opt out at any time.</li>
-  <li>Reply HELP for assistance.</li>
-  <li>Messages are transactional only — no marketing or promotional content is sent.</li>
+  <li><strong>Message frequency:</strong> Varies based on booking activity.</li>
+  <li><strong>Cost:</strong> Message and data rates may apply.</li>
+  <li><strong>To opt out:</strong> Reply STOP to any message. You will receive a confirmation, and no further messages will be sent.</li>
+  <li><strong>For help:</strong> Reply HELP to any message, or email caleb.yh.me@gmail.com.</li>
+  <li><strong>Carriers</strong> are not liable for delayed or undelivered messages.</li>
 </ul>
 
 <h2>Policies</h2>
 <ul>
-  <li><a href="privacy.html">Privacy Policy</a></li>
   <li><a href="terms.html">SMS Terms and Conditions</a></li>
+  <li><a href="privacy.html">Privacy Policy</a></li>
 </ul>
 
 <h2>Contact</h2>
 <p>Email: <a href="mailto:caleb.yh.me@gmail.com">caleb.yh.me@gmail.com</a></p>
 
 <footer>
-  &copy; 2026 Calebs Notification · Milton, Ontario, Canada
+  &copy; 2026 Calebs Notification &middot; Milton, Ontario, Canada
 </footer>
 
 </body>
