@@ -48,6 +48,7 @@ const en: Dictionary = {
     prevLabel: "Previous",
     nextLabel: "Next",
     allLabel: "All",
+    moreLabel: "Load more",
     viewOnInstagram: "View on Instagram",
   },
   contact: {

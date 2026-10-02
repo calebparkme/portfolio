@@ -28,6 +28,7 @@ export type Dictionary = {
     prevLabel: string;
     nextLabel: string;
     allLabel: string;
+    moreLabel: string;
     viewOnInstagram: string;
   };
   contact: {

@@ -1,11 +1,45 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { withBasePath } from "@/lib/basePath";
-import type { GalleryData } from "@/lib/gallery";
+import type { GalleryData, GalleryPhoto } from "@/lib/gallery";
 import type { Dictionary } from "@/dictionaries/types";
 
 const ALL = "__all__";
+const PAGE_SIZE = 12;
+
+const wideQuery = "(min-width: 640px)";
+
+function subscribeToWidth(onChange: () => void) {
+  const media = window.matchMedia(wideQuery);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+
+function useColumnCount() {
+  return useSyncExternalStore(
+    subscribeToWidth,
+    () => (window.matchMedia(wideQuery).matches ? 3 : 2),
+    () => 3,
+  );
+}
+
+// Places each photo in the currently shortest column. Unlike CSS columns,
+// photos already on screen keep their position when more are appended.
+function toColumns(photos: GalleryPhoto[], count: number) {
+  const columns = Array.from({ length: count }, () => ({
+    height: 0,
+    items: [] as { photo: GalleryPhoto; index: number }[],
+  }));
+  photos.forEach((photo, index) => {
+    const shortest = columns.reduce((min, column) =>
+      column.height < min.height ? column : min,
+    );
+    shortest.items.push({ photo, index });
+    shortest.height += photo.height / photo.width;
+  });
+  return columns.map((column) => column.items);
+}
 
 export default function Gallery({
   dict,
@@ -16,10 +50,13 @@ export default function Gallery({
 }) {
   const [activeCategory, setActiveCategory] = useState(ALL);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const columnCount = useColumnCount();
 
   const photos =
     data.categories.find((category) => category.key === activeCategory)?.photos ??
     data.photos;
+  const visiblePhotos = photos.slice(0, visibleCount);
 
   const close = useCallback(() => setActiveIndex(null), []);
 
@@ -74,7 +111,10 @@ export default function Gallery({
             <button
               key={tab.key}
               type="button"
-              onClick={() => setActiveCategory(tab.key)}
+              onClick={() => {
+                setActiveCategory(tab.key);
+                setVisibleCount(PAGE_SIZE);
+              }}
               aria-pressed={activeCategory === tab.key}
               className={`text-sm tracking-wide transition-colors ${
                 activeCategory === tab.key
@@ -88,25 +128,43 @@ export default function Gallery({
           ))}
         </div>
       )}
-      <div className="mx-auto w-4/5 columns-2 gap-3 sm:columns-3 sm:gap-4">
-        {photos.map((photo, index) => (
-          <button
-            key={photo.src}
-            type="button"
-            onClick={() => setActiveIndex(index)}
-            className="mb-3 block w-full break-inside-avoid overflow-hidden rounded-sm sm:mb-4"
-          >
-            <img
-              src={withBasePath(photo.src)}
-              alt={photo.alt}
-              width={photo.width}
-              height={photo.height}
-              loading="lazy"
-              className="w-full grayscale object-cover transition-all duration-500 hover:scale-105 hover:grayscale-0"
-            />
-          </button>
+      <div className="mx-auto flex w-4/5 items-start gap-3 sm:gap-4">
+        {toColumns(visiblePhotos, columnCount).map((column, columnIndex) => (
+          <div key={columnIndex} className="flex min-w-0 flex-1 flex-col gap-3 sm:gap-4">
+            {column.map(({ photo, index }) => (
+              <button
+                key={photo.src}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                className="block w-full overflow-hidden rounded-sm"
+              >
+                <img
+                  src={withBasePath(photo.src)}
+                  alt={photo.alt}
+                  width={photo.width}
+                  height={photo.height}
+                  loading="lazy"
+                  className="w-full grayscale object-cover transition-all duration-500 hover:scale-105 hover:grayscale-0"
+                />
+              </button>
+            ))}
+          </div>
         ))}
       </div>
+      {visibleCount < photos.length && (
+        <div className="mt-12 text-center">
+          <button
+            type="button"
+            onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
+            className="border border-neutral-300 px-8 py-3 text-xs tracking-[0.2em] text-neutral-600 uppercase transition-colors hover:border-neutral-900 hover:text-neutral-900"
+          >
+            {dict.moreLabel}
+            <span className="ml-2 text-neutral-400">
+              {visibleCount} / {photos.length}
+            </span>
+          </button>
+        </div>
+      )}
 
       {active && (
         <div
