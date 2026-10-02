@@ -5,6 +5,7 @@ import Gallery from "@/components/Gallery";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import { getDictionary } from "@/dictionaries";
+import { getGalleryData } from "@/lib/gallery";
 import type { Locale } from "@/i18n/config";
 
 export default function HomePage({ locale }: { locale: Locale }) {
@@ -16,7 +17,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
       <main className="flex-1">
         <Hero dict={dict.hero} />
         <About dict={dict.about} locale={locale} />
-        <Gallery dict={dict.gallery} locale={locale} />
+        <Gallery dict={dict.gallery} data={getGalleryData(locale)} />
         <Contact dict={dict.contact} />
       </main>
       <Footer dict={dict.footer} />

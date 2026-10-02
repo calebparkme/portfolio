@@ -42,3 +42,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Instagram photos synced at build time (scripts/sync-instagram.mjs)
+/public/gallery/instagram/

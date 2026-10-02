@@ -47,6 +47,8 @@ const ko: Dictionary = {
     closeLabel: "닫기",
     prevLabel: "이전",
     nextLabel: "다음",
+    allLabel: "전체",
+    viewOnInstagram: "인스타그램에서 보기",
   },
   contact: {
     kicker: "Contact",
