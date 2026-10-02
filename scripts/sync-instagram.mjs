@@ -68,6 +68,17 @@ function firstHashtag(caption) {
   return match ? match[1] : null;
 }
 
+// The caption as written, minus hashtags, for the lightbox overlay.
+function cleanCaption(caption) {
+  return (caption ?? "")
+    .replace(/#[\p{L}\p{N}_]+/gu, "")
+    .split("\n")
+    .map((line) => line.trim())
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 function captionToAlt(caption, category) {
   const text = (caption ?? "")
     .replace(/#[\p{L}\p{N}_]+/gu, "")
@@ -133,6 +144,7 @@ async function main() {
       width: size.width,
       height: size.height,
       alt: captionToAlt(item.caption, category),
+      caption: cleanCaption(item.caption) || undefined,
       category,
       permalink: item.permalink,
       timestamp: item.timestamp,

@@ -190,23 +190,35 @@ export default function Gallery({
           >
             ‹
           </button>
-          <img
-            src={withBasePath(active.src)}
-            alt={active.alt}
+          <figure
             onClick={(event) => event.stopPropagation()}
-            className="max-h-full max-w-full object-contain"
-          />
-          {active.permalink && (
-            <a
-              href={active.permalink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(event) => event.stopPropagation()}
-              className="absolute bottom-6 text-xs tracking-[0.2em] text-white/60 uppercase hover:text-white"
-            >
-              {dict.viewOnInstagram}
-            </a>
-          )}
+            className="relative overflow-hidden"
+          >
+            <img
+              src={withBasePath(active.src)}
+              alt={active.alt}
+              className="block max-h-[calc(100dvh-2rem)] max-w-[calc(100vw-2rem)] object-contain sm:max-h-[calc(100dvh-5rem)] sm:max-w-[calc(100vw-5rem)]"
+            />
+            {(active.caption || active.permalink) && (
+              <figcaption className="absolute inset-x-0 bottom-0 max-h-[45%] overflow-y-auto bg-linear-to-t from-black/80 via-black/60 to-transparent px-5 pt-12 pb-4 sm:px-8 sm:pb-6">
+                {active.caption && (
+                  <p className="text-sm leading-relaxed font-light whitespace-pre-line text-white/90 [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
+                    {active.caption}
+                  </p>
+                )}
+                {active.permalink && (
+                  <a
+                    href={active.permalink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 inline-block text-[11px] tracking-[0.2em] text-white/60 uppercase hover:text-white"
+                  >
+                    {dict.viewOnInstagram}
+                  </a>
+                )}
+              </figcaption>
+            )}
+          </figure>
           <button
             type="button"
             onClick={(event) => {

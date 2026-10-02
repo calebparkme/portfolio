@@ -8,6 +8,7 @@ export type GalleryPhoto = {
   width: number;
   height: number;
   alt: string;
+  caption?: string;
   permalink?: string;
 };
 

@@ -10,14 +10,15 @@ import type { Locale } from "@/i18n/config";
 
 export default function HomePage({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
+  const gallery = getGalleryData(locale);
 
   return (
     <>
       <Header dict={dict} locale={locale} />
       <main className="flex-1">
-        <Hero dict={dict.hero} />
+        <Hero dict={dict.hero} photos={gallery.photos} />
         <About dict={dict.about} locale={locale} />
-        <Gallery dict={dict.gallery} data={getGalleryData(locale)} />
+        <Gallery dict={dict.gallery} data={gallery} />
         <Contact dict={dict.contact} />
       </main>
       <Footer dict={dict.footer} />
