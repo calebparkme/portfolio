@@ -29,6 +29,23 @@ jobs:
       - run: npm run sync:instagram
         env:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_TOKEN_OUT: ${{ runner.temp }}/ig-token
+      # Instagram returns a new token on every refresh; save it back so the
+      # secret never reaches its 60-day expiry. GH_PAT needs Secrets: write.
+      - name: Save refreshed Instagram token
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          TOKEN_FILE: ${{ runner.temp }}/ig-token
+        run: |
+          if [ ! -s "$TOKEN_FILE" ]; then
+            echo "No refreshed token; skipping."
+          elif [ -z "$GH_TOKEN" ]; then
+            echo "::warning::GH_PAT secret is not set; IG_ACCESS_TOKEN was not updated and will expire."
+          else
+            gh secret set IG_ACCESS_TOKEN --repo "$GITHUB_REPOSITORY" < "$TOKEN_FILE"
+            echo "IG_ACCESS_TOKEN updated."
+          fi
+          rm -f "$TOKEN_FILE"
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:

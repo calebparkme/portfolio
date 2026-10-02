@@ -5,7 +5,7 @@
 //   public/gallery/instagram/<id>.jpg
 //   public/gallery/instagram/posts.json
 //
-// Usage: IG_ACCESS_TOKEN=... node scripts/sync-instagram.mjs
+// Usage: IG_ACCESS_TOKEN=... [IG_TOKEN_OUT=path] node scripts/sync-instagram.mjs
 // Without a token the script exits quietly and the gallery falls back to
 // the bundled photos in src/data/gallery.ts.
 
@@ -45,8 +45,9 @@ async function fetchAllMedia() {
   return media;
 }
 
-// Long-lived tokens expire after 60 days unless refreshed; refreshing on every
-// sync keeps the token alive as long as the site is rebuilt regularly.
+// Long-lived tokens expire after 60 days and refreshing returns a new token.
+// When IG_TOKEN_OUT is set, the new token is written there so CI can store it
+// back into the IG_ACCESS_TOKEN secret.
 async function refreshToken() {
   try {
     const body = await getJson(
@@ -54,10 +55,8 @@ async function refreshToken() {
     );
     const days = Math.round(body.expires_in / 86400);
     console.log(`[instagram] Token refreshed; expires in ~${days} days.`);
-    if (body.access_token && body.access_token !== token) {
-      console.warn(
-        "[instagram] Refresh returned a new token string; update the IG_ACCESS_TOKEN secret.",
-      );
+    if (process.env.IG_TOKEN_OUT && body.access_token) {
+      await writeFile(process.env.IG_TOKEN_OUT, body.access_token, { mode: 0o600 });
     }
   } catch (error) {
     console.warn(`[instagram] Token refresh skipped: ${error.message}`);
