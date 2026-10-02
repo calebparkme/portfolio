@@ -139,7 +139,7 @@ export default function Gallery({
                 className="block w-full overflow-hidden rounded-sm"
               >
                 <img
-                  src={withBasePath(photo.src)}
+                  src={withBasePath(photo.thumb ?? photo.src)}
                   alt={photo.alt}
                   width={photo.width}
                   height={photo.height}

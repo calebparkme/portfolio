@@ -5,6 +5,7 @@ import type { Locale } from "@/i18n/config";
 
 export type GalleryPhoto = {
   src: string;
+  thumb?: string;
   width: number;
   height: number;
   alt: string;

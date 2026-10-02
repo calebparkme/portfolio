@@ -2,7 +2,8 @@
 // The first hashtag in each caption becomes the post's gallery category.
 //
 // Output (gitignored, regenerated on every sync):
-//   public/gallery/instagram/<id>.jpg
+//   public/gallery/instagram/<id>.jpg        (up to 2560px, hero + lightbox)
+//   public/gallery/instagram/<id>-thumb.jpg  (800px, gallery grid)
 //   public/gallery/instagram/posts.json
 //
 // Usage: IG_ACCESS_TOKEN=... [IG_TOKEN_OUT=path] node scripts/sync-instagram.mjs
@@ -11,11 +12,15 @@
 
 import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import sharp from "sharp";
 
 const API = "https://graph.instagram.com";
 const OUT_DIR = path.join(process.cwd(), "public", "gallery", "instagram");
 const FIELDS =
   "id,caption,media_type,media_url,permalink,timestamp,children{media_type,media_url}";
+
+const LARGE_WIDTH = 2560;
+const THUMB_WIDTH = 800;
 
 const token = process.env.IG_ACCESS_TOKEN;
 
@@ -97,24 +102,14 @@ function coverImageUrl(item) {
   return undefined; // videos/reels are not part of the photo gallery
 }
 
-// Reads width/height from a JPEG's SOF marker so the gallery can reserve space.
-function jpegSize(buffer) {
-  let offset = 2;
-  while (offset + 9 < buffer.length) {
-    if (buffer[offset] !== 0xff) return null;
-    const marker = buffer[offset + 1];
-    const length = buffer.readUInt16BE(offset + 2);
-    const isSof =
-      marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker);
-    if (isSof) {
-      return {
-        height: buffer.readUInt16BE(offset + 5),
-        width: buffer.readUInt16BE(offset + 7),
-      };
-    }
-    offset += 2 + length;
-  }
-  return null;
+// Instagram serves originals up to ~4096px; resize once here so the site
+// never ships them as-is.
+async function saveResized(buffer, width, filePath) {
+  return sharp(buffer)
+    .rotate()
+    .resize({ width, withoutEnlargement: true })
+    .jpeg({ quality: 82, mozjpeg: true })
+    .toFile(filePath);
 }
 
 async function main() {
@@ -133,14 +128,16 @@ async function main() {
       continue;
     }
     const buffer = Buffer.from(await res.arrayBuffer());
-    const size = jpegSize(buffer) ?? { width: 1080, height: 1080 };
     const fileName = `${item.id}.jpg`;
-    await writeFile(path.join(OUT_DIR, fileName), buffer);
+    const thumbName = `${item.id}-thumb.jpg`;
+    const size = await saveResized(buffer, LARGE_WIDTH, path.join(OUT_DIR, fileName));
+    await saveResized(buffer, THUMB_WIDTH, path.join(OUT_DIR, thumbName));
 
     const category = firstHashtag(item.caption);
     posts.push({
       id: item.id,
       src: `/gallery/instagram/${fileName}`,
+      thumb: `/gallery/instagram/${thumbName}`,
       width: size.width,
       height: size.height,
       alt: captionToAlt(item.caption, category),
@@ -152,7 +149,7 @@ async function main() {
   }
 
   // Drop images for posts that were deleted on Instagram.
-  const keep = new Set(posts.map((post) => `${post.id}.jpg`));
+  const keep = new Set(posts.flatMap((post) => [`${post.id}.jpg`, `${post.id}-thumb.jpg`]));
   for (const file of await readdir(OUT_DIR)) {
     if (file.endsWith(".jpg") && !keep.has(file)) {
       await rm(path.join(OUT_DIR, file));
