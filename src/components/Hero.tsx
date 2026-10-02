@@ -1,23 +1,12 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import { withBasePath } from "@/lib/basePath";
 import type { GalleryPhoto } from "@/lib/gallery";
+import { useRandomPhoto } from "@/lib/useRandomPhoto";
 import type { Dictionary } from "@/dictionaries/types";
 
-let pickedSrc: string | null = null;
-
-// Picked once per page load in the browser; the static HTML renders no photo.
-function pickRandomSrc(photos: GalleryPhoto[]) {
-  if (pickedSrc === null && photos.length > 0) {
-    const landscape = photos.filter((photo) => photo.width > photo.height);
-    const pool = landscape.length > 0 ? landscape : photos;
-    pickedSrc = pool[Math.floor(Math.random() * pool.length)].src;
-  }
-  return pickedSrc;
-}
-
-const noopSubscribe = () => () => {};
+const isLandscape = (photo: GalleryPhoto) => photo.width > photo.height;
 
 export default function Hero({
   dict,
@@ -26,18 +15,14 @@ export default function Hero({
   dict: Dictionary["hero"];
   photos: GalleryPhoto[];
 }) {
-  const src = useSyncExternalStore(
-    noopSubscribe,
-    () => pickRandomSrc(photos),
-    () => null,
-  );
+  const photo = useRandomPhoto("hero", photos, isLandscape);
   const [loaded, setLoaded] = useState(false);
 
   return (
     <section id="top" className="relative flex h-screen w-full items-end overflow-hidden bg-neutral-900">
-      {src && (
+      {photo && (
         <img
-          src={withBasePath(src)}
+          src={withBasePath(photo.src)}
           alt=""
           onLoad={() => setLoaded(true)}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${

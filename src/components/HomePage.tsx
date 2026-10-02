@@ -17,7 +17,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
       <Header dict={dict} locale={locale} />
       <main className="flex-1">
         <Hero dict={dict.hero} photos={gallery.photos} />
-        <About dict={dict.about} locale={locale} />
+        <About dict={dict.about} photos={gallery.photos} />
         <Gallery dict={dict.gallery} data={gallery} />
         <Contact dict={dict.contact} />
       </main>
