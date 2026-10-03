@@ -202,7 +202,7 @@ export default function Gallery({
             {(active.caption || active.permalink) && (
               <figcaption className="absolute inset-x-0 bottom-0 max-h-[45%] overflow-y-auto bg-linear-to-t from-black/80 via-black/60 to-transparent px-5 pt-12 pb-4 sm:px-8 sm:pb-6">
                 {active.caption && (
-                  <p className="text-sm leading-relaxed font-light whitespace-pre-line text-white/90 [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
+                  <p className="max-w-3xl text-base leading-relaxed whitespace-pre-line text-white/90 [text-shadow:0_1px_6px_rgba(0,0,0,0.5)] sm:text-lg lg:text-xl">
                     {active.caption}
                   </p>
                 )}
@@ -211,7 +211,7 @@ export default function Gallery({
                     href={active.permalink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-3 inline-block text-[11px] tracking-[0.2em] text-white/60 uppercase hover:text-white"
+                    className="mt-3 inline-block text-xs tracking-[0.2em] text-white/60 uppercase hover:text-white"
                   >
                     {dict.viewOnInstagram}
                   </a>
