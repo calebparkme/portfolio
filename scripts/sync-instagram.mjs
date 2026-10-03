@@ -6,12 +6,18 @@
 //   public/gallery/instagram/<id>-thumb.jpg  (800px, gallery grid)
 //   public/gallery/instagram/posts.json
 //
-// Usage: IG_ACCESS_TOKEN=... [IG_TOKEN_OUT=path] node scripts/sync-instagram.mjs
+// Usage: IG_ACCESS_TOKEN=... [IG_TOKEN_OUT=path] [ANTHROPIC_API_KEY=...] node scripts/sync-instagram.mjs
 // Without a token the script exits quietly and the gallery falls back to
 // the bundled photos in src/data/gallery.ts.
+//
+// Korean captions get an English version (captionEn/altEn) for the English
+// page: translated with Claude when ANTHROPIC_API_KEY is set, otherwise with
+// Google Translate's public endpoint. If translation fails the English page
+// shows the original caption.
 
 import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import Anthropic from "@anthropic-ai/sdk";
 import sharp from "sharp";
 
 const API = "https://graph.instagram.com";
@@ -94,6 +100,55 @@ function captionToAlt(caption, category) {
   return text.length > 140 ? `${text.slice(0, 137)}…` : text;
 }
 
+const HANGUL = /[\u3131-\u318E\uAC00-\uD7A3]/;
+
+const anthropic = process.env.ANTHROPIC_API_KEY ? new Anthropic() : null;
+
+async function translateWithClaude(text) {
+  const response = await anthropic.beta.messages.create({
+    model: "claude-opus-5-5",
+    max_tokens: 4000,
+    output_config: { effort: "low" },
+    betas: ["server-side-fallback-2026-07-01"],
+    fallbacks: "default",
+    system:
+      "You translate Instagram photo captions written in Korean into natural English. " +
+      "Keep the tone, line breaks, emoji and proper nouns. " +
+      "Reply with the translation only.",
+    messages: [{ role: "user", content: text }],
+  });
+  if (response.stop_reason === "refusal") throw new Error("translation declined");
+  const translated = response.content
+    .filter((block) => block.type === "text")
+    .map((block) => block.text)
+    .join("")
+    .trim();
+  if (!translated) throw new Error("empty translation");
+  return translated;
+}
+
+async function translateWithGoogle(text) {
+  const url =
+    "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q=" +
+    encodeURIComponent(text);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  const body = await res.json();
+  return body[0].map((segment) => segment[0]).join("").trim();
+}
+
+// English version of a caption, or undefined when it has no Korean or the
+// translation failed (the English page then falls back to the original).
+async function translateCaption(id, text) {
+  if (!text || !HANGUL.test(text)) return undefined;
+  try {
+    return anthropic ? await translateWithClaude(text) : await translateWithGoogle(text);
+  } catch (error) {
+    console.warn(`[instagram] Could not translate caption of ${id}: ${error.message}`);
+    return undefined;
+  }
+}
+
 function coverImageUrl(item) {
   if (item.media_type === "IMAGE") return item.media_url;
   if (item.media_type === "CAROUSEL_ALBUM") {
@@ -134,6 +189,8 @@ async function main() {
     await saveResized(buffer, THUMB_WIDTH, path.join(OUT_DIR, thumbName));
 
     const category = firstHashtag(item.caption);
+    const caption = cleanCaption(item.caption) || undefined;
+    const captionEn = await translateCaption(item.id, caption);
     posts.push({
       id: item.id,
       src: `/gallery/instagram/${fileName}`,
@@ -141,7 +198,9 @@ async function main() {
       width: size.width,
       height: size.height,
       alt: captionToAlt(item.caption, category),
-      caption: cleanCaption(item.caption) || undefined,
+      altEn: captionEn ? captionToAlt(captionEn, category) : undefined,
+      caption,
+      captionEn,
       category,
       permalink: item.permalink,
       timestamp: item.timestamp,
@@ -156,6 +215,10 @@ async function main() {
     }
   }
 
+  if (posts.some((post) => post.captionEn)) {
+    const engine = anthropic ? "Claude" : "Google Translate";
+    console.log(`[instagram] Translated captions to English with ${engine}.`);
+  }
   await writeFile(path.join(OUT_DIR, "posts.json"), `${JSON.stringify(posts, null, 2)}\n`);
   const categories = new Set(posts.map((post) => post.category?.toLowerCase()).filter(Boolean));
   console.log(`[instagram] Synced ${posts.length} photos in ${categories.size} categories.`);

@@ -30,6 +30,8 @@ jobs:
         env:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           IG_TOKEN_OUT: ${{ runner.temp }}/ig-token
+          # Optional: translate captions with Claude instead of Google Translate.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       # Instagram returns a new token on every refresh; save it back so the
       # secret never reaches its 60-day expiry. GH_PAT needs Secrets: write.
       - name: Save refreshed Instagram token

@@ -26,6 +26,8 @@ export type GalleryData = {
 
 type InstagramPost = GalleryPhoto & {
   id: string;
+  altEn?: string;
+  captionEn?: string;
   category: string | null;
   timestamp: string;
 };
@@ -38,12 +40,23 @@ function readInstagramPosts(): InstagramPost[] {
   return JSON.parse(readFileSync(POSTS_FILE, "utf8")) as InstagramPost[];
 }
 
+// Captions are written in Korean; the English page uses the translation
+// from the sync step when there is one.
+function localizePost(post: InstagramPost, locale: Locale): InstagramPost {
+  if (locale !== "en") return post;
+  return {
+    ...post,
+    alt: post.altEn ?? post.alt,
+    caption: post.captionEn ?? post.caption,
+  };
+}
+
 // Runs at build time (static export). Groups Instagram photos by the first
 // hashtag of each caption; categories with the most photos come first.
 export function getGalleryData(locale: Locale): GalleryData {
-  const posts = readInstagramPosts().sort((a, b) =>
-    b.timestamp.localeCompare(a.timestamp),
-  );
+  const posts = readInstagramPosts()
+    .map((post) => localizePost(post, locale))
+    .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
 
   if (posts.length === 0) {
     return {
