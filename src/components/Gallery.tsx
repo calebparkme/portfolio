@@ -200,7 +200,7 @@ export default function Gallery({
               className="block max-h-[calc(100dvh-2rem)] max-w-[calc(100vw-2rem)] object-contain sm:max-h-[calc(100dvh-5rem)] sm:max-w-[calc(100vw-5rem)]"
             />
             {(active.caption || active.permalink) && (
-              <figcaption className="absolute inset-x-0 bottom-0 max-h-[45%] overflow-y-auto bg-linear-to-t from-black/80 via-black/60 to-transparent px-5 pt-12 pb-4 sm:px-8 sm:pb-6">
+              <figcaption className="absolute inset-x-0 bottom-0 max-h-full overflow-y-auto bg-linear-to-t from-black/80 via-black/60 to-transparent px-5 pt-12 pb-4 sm:px-8 sm:pb-6">
                 {active.caption && (
                   <p className="max-w-3xl text-base leading-relaxed whitespace-pre-line text-white/90 [text-shadow:0_1px_6px_rgba(0,0,0,0.5)] sm:text-lg lg:text-xl">
                     {active.caption}
