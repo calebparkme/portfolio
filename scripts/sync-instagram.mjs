@@ -11,9 +11,9 @@
 // the bundled photos in src/data/gallery.ts.
 //
 // Korean captions get an English version (captionEn/altEn) for the English
-// page: translated with Claude when ANTHROPIC_API_KEY is set, otherwise with
-// Google Translate's public endpoint. If translation fails the English page
-// shows the original caption.
+// page: translated with Claude when ANTHROPIC_API_KEY is set, falling back to
+// Google Translate's public endpoint. If both fail the English page shows the
+// original caption.
 
 import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -102,7 +102,10 @@ function captionToAlt(caption, category) {
 
 const HANGUL = /[\u3131-\u318E\uAC00-\uD7A3]/;
 
-const anthropic = process.env.ANTHROPIC_API_KEY ? new Anthropic() : null;
+// Set to null after an authentication error so the remaining captions go
+// straight to Google Translate instead of failing one by one.
+let anthropic = process.env.ANTHROPIC_API_KEY ? new Anthropic() : null;
+const translatedBy = new Set();
 
 async function translateWithClaude(text) {
   const response = await anthropic.beta.messages.create({
@@ -141,8 +144,23 @@ async function translateWithGoogle(text) {
 // translation failed (the English page then falls back to the original).
 async function translateCaption(id, text) {
   if (!text || !HANGUL.test(text)) return undefined;
+  if (anthropic) {
+    try {
+      const translated = await translateWithClaude(text);
+      translatedBy.add("Claude");
+      return translated;
+    } catch (error) {
+      console.warn(`[instagram] Claude could not translate ${id}: ${error.message}`);
+      if (error instanceof Anthropic.AuthenticationError) {
+        console.warn("[instagram] Check the ANTHROPIC_API_KEY secret; using Google Translate.");
+        anthropic = null;
+      }
+    }
+  }
   try {
-    return anthropic ? await translateWithClaude(text) : await translateWithGoogle(text);
+    const translated = await translateWithGoogle(text);
+    translatedBy.add("Google Translate");
+    return translated;
   } catch (error) {
     console.warn(`[instagram] Could not translate caption of ${id}: ${error.message}`);
     return undefined;
@@ -215,9 +233,9 @@ async function main() {
     }
   }
 
-  if (posts.some((post) => post.captionEn)) {
-    const engine = anthropic ? "Claude" : "Google Translate";
-    console.log(`[instagram] Translated captions to English with ${engine}.`);
+  if (translatedBy.size > 0) {
+    const engines = [...translatedBy].join(" and ");
+    console.log(`[instagram] Translated captions to English with ${engines}.`);
   }
   await writeFile(path.join(OUT_DIR, "posts.json"), `${JSON.stringify(posts, null, 2)}\n`);
   const categories = new Set(posts.map((post) => post.category?.toLowerCase()).filter(Boolean));
